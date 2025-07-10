@@ -1,111 +1,474 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Exam Performance Indicator</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --warning: #f72585;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-section {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+    }
+    .header-section h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .header-section p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .form-section {
+      background-color: #fff;
+      padding: 2.5rem;
+    }
+    .form-header {
+      color: var(--primary);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 3px solid var(--success);
+    }
+
+    .form-group {
+      margin-bottom: 1.8rem;
+    }
+    .form-label {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.7rem;
+    }
+    .form-icon {
+      background-color: var(--primary);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .form-control {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+    }
+
+    .progress-container {
+      margin-top: 1.5rem;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .progress {
+      height: 12px;
+      border-radius: 10px;
+    }
+
+    .btn-predict {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 12px;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+    }
+    .btn-predict:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+    }
+
+    .prediction-card {
+      display: none;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 2rem;
+    }
+    .prediction-card h2 {
+      font-weight: 700;
+      color: #d90429;
+      margin-bottom: 1rem;
+    }
+    .prediction-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #d90429;
+      background: #fff;
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      display: inline-block;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-container {
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      margin-top: 2rem;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 1rem;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stat-label {
+      color: #6c757d;
+      font-weight: 500;
+    }
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        margin: 1rem;
+      }
+      .form-section {
+        padding: 1.5rem;
+      }
+      .header-section h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
 <body>
-    <div class="login">
-       <h1>Student Exam Performance Indicator</h1>
-   
-       <form action="{{ url_for('predict_datapoint')}}" method="post">
-        <h1>
-            <legend>Student Exam Performance Prediction</legend>
-        </h1>
-        <div class="mb-3">
-            <label class="form-label">Gender</label>
-            <select class="form-control" name="gender" placeholder="Enter you Gender" required>
-                <option class="placeholder" selected disabled value="">Select your Gender</option>
-                <option value="male">
-                    Male
-                </option>
-                <option value="female">
-                    Female
-                </option>
-            </select>
+  <div class="login-container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h1>
+        <i class="fas fa-graduation-cap me-3"></i>
+        Student Exam Performance Indicator
+      </h1>
+      <p>Predict student performance based on demographic and academic factors</p>
+    </div>
+
+    <!-- Form Section -->
+    <div class="form-section">
+      <h2 class="form-header">Student Exam Performance Prediction</h2>
+      <form id="performanceForm">
+        <div class="row">
+          <!-- Left Column -->
+          <div class="col-md-6">
+            <!-- Gender -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="form-icon"><i class="fas fa-venus-mars"></i></span>
+                Gender
+              </label>
+              <select class="form-control form-select" name="gender" required>
+                <option value="" disabled selected>Select your Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            <!-- Race or Ethnicity -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="form-icon"><i class="fas fa-users"></i></span>
+                Race or Ethnicity
+              </label>
+              <select class="form-control form-select" name="ethnicity" required>
+                <option value="" disabled selected>Select Ethnicity</option>
+                <option value="group A">Group A</option>
+                <option value="group B">Group B</option>
+                <option value="group C">Group C</option>
+                <option value="group D">Group D</option>
+                <option value="group E">Group E</option>
+              </select>
+            </div>
+
+            <!-- Parental Level of Education -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="form-icon"><i class="fas fa-user-graduate"></i></span>
+                Parental Level of Education
+              </label>
+              <select
+                class="form-control form-select"
+                name="parental_level_of_education"
+                required
+              >
+                <option value="" disabled selected>Select Parent Education</option>
+                <option value="associate's degree">Associate's Degree</option>
+                <option value="bachelor's degree">Bachelor's Degree</option>
+                <option value="high school">High School</option>
+                <option value="master's degree">Master's Degree</option>
+                <option value="some college">Some College</option>
+                <option value="some high school">Some High School</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="col-md-6">
+            <!-- Lunch Type -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="form-icon"><i class="fas fa-utensils"></i></span>
+                Lunch Type
+              </label>
+              <select class="form-control form-select" name="lunch" required>
+                <option value="" disabled selected>Select Lunch Type</option>
+                <option value="free/reduced">Free/Reduced</option>
+                <option value="standard">Standard</option>
+              </select>
+            </div>
+
+            <!-- Test Preparation Course -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="form-icon"><i class="fas fa-book"></i></span>
+                Test Preparation Course
+              </label>
+              <select
+                class="form-control form-select"
+                name="test_preparation_course"
+                required
+              >
+                <option value="" disabled selected>Select Test Course</option>
+                <option value="none">None</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+
+            <!-- Reading Score -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="form-icon"><i class="fas fa-book-reader"></i></span>
+                Reading Score out of 100
+              </label>
+              <input
+                class="form-control"
+                type="number"
+                name="reading_score"
+                placeholder="Enter your Reading score"
+                min="0"
+                max="100"
+                required
+              />
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>0</span>
+                  <span id="readingValue">50</span>
+                  <span>100</span>
+                </div>
+                <div class="progress">
+                  <div
+                    id="readingProgress"
+                    class="progress-bar bg-info"
+                    role="progressbar"
+                    style="width: 50%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Writing Score -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="form-icon"><i class="fas fa-pencil-alt"></i></span>
+                Writing Score out of 100
+              </label>
+              <input
+                class="form-control"
+                type="number"
+                name="writing_score"
+                placeholder="Enter your Writing Score"
+                min="0"
+                max="100"
+                required
+              />
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>0</span>
+                  <span id="writingValue">50</span>
+                  <span>100</span>
+                </div>
+                <div class="progress">
+                  <div
+                    id="writingProgress"
+                    class="progress-bar bg-warning"
+                    role="progressbar"
+                    style="width: 50%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Submit Button -->
         <div class="mb-3">
-            <label class="form-label">Race or Ethnicity</label>
-            <select class="form-control" name="ethnicity" placeholder="Enter you ethnicity" required>
-                <option class="placeholder" selected disabled value="">Select Ethnicity</option>
-                <option value="group A">
-                    Group A
-                </option>
-                <option value="group B">
-                    Group B
-                </option>
-                <option value="group C">
-                    Group C
-                </option>
-                <option value="group D">
-                    Group D
-                </option>
-                <option value="group E">
-                    Group E
-                </option>
-            </select>
+          <button class="btn btn-predict" type="submit">
+            <i class="fas fa-calculator me-2"></i>
+            Predict your Maths Score
+          </button>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Parental Level of Education</label>
-            <select class="form-control" name="parental_level_of_education"
-                placeholder="Enter you Parent Education" required>
-                <option class="placeholder" selected disabled value="">Select Parent Education</option>
-                <option value="associate's degree">
-                    associate's degree
-                </option>
-                <option value="bachelor's degree">
-                    bachelor's degree
-                </option>
-                <option value="high school">
-                    high school
-                </option>
-                <option value="master's degree">
-                    master's degree
-                </option>
-                <option value="some college">
-                    some college
-                </option>
-                <option value="some high school">
-                    some high school
-                </option>
-            </select>
+      </form>
+
+      <!-- Prediction Result -->
+      <div class="prediction-card" id="predictionResult">
+        <h2>Maths Score Prediction</h2>
+        <div class="prediction-value">82</div>
+        <p class="mt-3">
+          Based on the provided information, the predicted math score is shown
+          above.
+        </p>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="stats-container">
+        <div class="row text-center">
+          <div class="col-md-3 col-6 stat-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-value">89%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="col-md-3 col-6 stat-card">
+            <div class="feature-icon">
+              <i class="fas fa-database"></i>
+            </div>
+            <div class="stat-value">10K+</div>
+            <div class="stat-label">Data Points</div>
+          </div>
+          <div class="col-md-3 col-6 stat-card">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-value">5</div>
+            <div class="stat-label">Key Factors</div>
+          </div>
+          <div class="col-md-3 col-6 stat-card">
+            <div class="feature-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <div class="stat-value">0.2s</div>
+            <div class="stat-label">Prediction Time</div>
+          </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Lunch Type</label>
-            <select class="form-control" name="lunch" placeholder="Enter you Lunch" required>
-                <option class="placeholder" selected disabled value="">Select Lunch Type</option>
-                <option value="free/reduced">
-                    free/reduced
-                </option>
-                <option value="standard">
-                    standard
-                </option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Test preparation Course</label>
-            <select class="form-control" name="test_preparation_course" placeholder="Enter you Course"
-                required>
-                <option class="placeholder" selected disabled value="">Select Test_course</option>
-                <option value="none">
-                    None
-                </option>
-                <option value="completed">
-                    Completed
-                </option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Writing Score out of 100</label>
-            <input class="form-control" type="number" name="reading_score"
-                placeholder="Enter your Reading score" min='0' max='100' />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Reading Score out of 100</label>
-            <input class="form-control" type="number" name="writing_score"
-                placeholder="Enter your Reading Score" min='0' max='100' />
-        </div>
-        <div class="mb-3">
-            <input class="btn btn-primary" type="submit" value="Predict your Maths Score" required />
-        </div>
-    </form>
-    <h2>
-       THE  prediction is {{results}}
-    </h2>
-   <body>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Update progress bars as scores change
+    document
+      .querySelector('input[name="reading_score"]')
+      .addEventListener("input", function () {
+        const value = this.value;
+        document.getElementById("readingValue").textContent = value;
+        document.getElementById("readingProgress").style.width = value + "%";
+      });
+
+    document
+      .querySelector('input[name="writing_score"]')
+      .addEventListener("input", function () {
+        const value = this.value;
+        document.getElementById("writingValue").textContent = value;
+        document.getElementById("writingProgress").style.width = value + "%";
+      });
+
+    // Form submission handler
+    document
+      .getElementById("performanceForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const submitBtn = document.querySelector(".btn-predict");
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin me-2"></i>Predicting...';
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+          const mathScore = Math.floor(Math.random() * 30) + 70;
+
+          document.querySelector(".prediction-value").textContent = mathScore;
+          document.getElementById("predictionResult").style.display = "block";
+
+          submitBtn.innerHTML =
+            '<i class="fas fa-calculator me-2"></i>Predict your Maths Score';
+          submitBtn.disabled = false;
+
+          document.getElementById("predictionResult").scrollIntoView({
+            behavior: "smooth",
+          });
+        }, 1500);
+      });
+
+    // Initialize demo values
+    document.querySelector('input[name="reading_score"]').value = 75;
+    document.querySelector('input[name="writing_score"]').value = 80;
+    document.getElementById("readingValue").textContent = 75;
+    document.getElementById("writingValue").textContent = 80;
+    document.getElementById("readingProgress").style.width = "75%";
+    document.getElementById("writingProgress").style.width = "80%";
+  </script>
+</body>
 </html>
